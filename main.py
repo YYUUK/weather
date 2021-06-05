@@ -34,6 +34,6 @@ for i in region:
     sample_list.append(str(round(average[0], 2)))
     sample_list.append(str(round(average[1], 2)))
     sample_list.append(str(round(average[2], 2)))
-    wr.writerows(sample_list)
+    wr.writerow(sample_list)
 
 f.close()
