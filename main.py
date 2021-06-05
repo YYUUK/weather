@@ -1,13 +1,30 @@
 import requests
 import pprint
 import pandas as pd
+import csv
 
-url = "http://apis.data.go.kr/1360000/AsosDalyInfoService/getWthrDataList?serviceKey=jCAu%2By2rHxF3JN9k%2BXwhS%2FRDwWIRS9O3ln2p%2Fdxx%2BRNj3deacKcMXUQv9Cn5EJSJet3sBrb41dp%2BJLK%2FNpfk%2Bw%3D%3D&numOfRows=10&pageNo=1&dataType=JSON&dataCd=ASOS&dateCd=DAY&startDt=20100101&endDt=20100102&stnIds=108"
+month = "06"
 
-response = requests.get(url)
-responseJson = response.json()
+'''
+108 서울 114 원주 133 대전 146 전주 156 광주 159 부산 184 제주 143 대구
+'''
+region = [108, 114, 133, 146, 156, 159, 184, 143]
+'''
+avgTa = 평균 기온  avgWs = 평균 풍속  avgRhm = 평균 상대습도  stnNm = 지명
+'''
+result = ['avgTa', 'avgWs', 'avgRhm']
+average = [0, 0, 0]
 
-
-df = pd.json_normalize(responseJson['response'])
-pprint.pprint(responseJson)
-print(df)
+for i in region:
+    avg = 0
+    url = "http://apis.data.go.kr/1360000/AsosDalyInfoService/getWthrDataList?serviceKey=jCAu%2By2rHxF3JN9k%2BXwhS%2FRDwWIRS9O3ln2p%2Fdxx%2BRNj3deacKcMXUQv9Cn5EJSJet3sBrb41dp%2BJLK%2FNpfk%2Bw%3D%3D&numOfRows=10&pageNo=1&dataType=JSON&dataCd=ASOS&dateCd=DAY&startDt=20200610&endDt=20200620&stnIds="+str(i)
+    response = requests.get(url)
+    responseJson = response.json()
+    for j in range(10):
+        average[0] = average[0] + float(responseJson['response']['body']['items']['item'][j]['avgTa'])
+        average[1] = average[1] + float(responseJson['response']['body']['items']['item'][j]['avgWs'])
+        average[2] = average[2] + float(responseJson['response']['body']['items']['item'][j]['avgRhm'])
+    for k in range(3):
+        average[k] = average[k] / 10
+    print(responseJson['response']['body']['items']['item'][0]['stnNm'])
+    print(average)
